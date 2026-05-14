@@ -1,0 +1,46 @@
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { Colors } from '@/constants/theme';
+
+function AuthNavigator() {
+  const { token, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+    const inAuth = segments[0] === '(auth)';
+    const inMain = segments[0] === '(main)';
+
+    if (!token && !inAuth) {
+      // Not logged in and not already on an auth screen → go to login
+      router.replace('/(auth)/login');
+    } else if (token && !inMain) {
+      // Logged in but on splash/index or auth screen → go to home
+      router.replace('/(main)/(home)');
+    }
+  }, [token, isLoading, segments]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  return <Stack screenOptions={{ headerShown: false }} />;
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <StatusBar style="auto" />
+      <AuthNavigator />
+    </AuthProvider>
+  );
+}
