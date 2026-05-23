@@ -7,6 +7,8 @@
     "icon": "./assets/images/icon.png",
     "scheme": "mosestransport",
     "userInterfaceStyle": "automatic",
+    "privacy": "unlisted",
+    "owner": "topnotchtech-2",
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -17,7 +19,12 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.topnotchtech.mosestransport"
     },
     "web": {
       "output": "static",
@@ -49,15 +56,14 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "af560112-5824-4da0-9e75-ec78e481a2fa"
+        "projectId": "24c00daf-e58f-4c69-b45d-520a2ecb5545"
       }
     },
-    "owner": "alfredpur",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/af560112-5824-4da0-9e75-ec78e481a2fa"
+      "url": "https://u.expo.dev/24c00daf-e58f-4c69-b45d-520a2ecb5545"
     }
   }
 }
