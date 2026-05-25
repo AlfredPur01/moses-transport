@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "mosestransport",
     "userInterfaceStyle": "automatic",
-    "privacy": "unlisted",
+    "privacy": "public",
     "owner": "topnotchtech-2",
     "ios": {
       "icon": "./assets/expo.icon"
@@ -47,6 +47,13 @@
             "imageWidth": 76
           }
         }
+      ],
+      "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "color": "#208AEF"
+        }
       ]
     ],
     "experiments": {
@@ -56,14 +63,14 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "24c00daf-e58f-4c69-b45d-520a2ecb5545"
+        "projectId": "f1863a62-abe9-4ad5-b1b3-32ce9d721017"
       }
     },
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/24c00daf-e58f-4c69-b45d-520a2ecb5545"
+      "url": "https://u.expo.dev/f1863a62-abe9-4ad5-b1b3-32ce9d721017"
     }
   }
 }
