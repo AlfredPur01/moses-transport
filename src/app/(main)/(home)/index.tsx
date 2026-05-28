@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -43,33 +43,82 @@ const greeting = () => {
   return 'Good evening';
 };
 
-// ─── KYC Banner ─────────────────────────────────────────────────────────────
+// ─── Gate Cards ──────────────────────────────────────────────────────────────
 
-function KycBanner({ status }: { status: string }) {
-  if (status === 'approved') return null;
+function FeeGateCard() {
+  return (
+    <View style={styles.gateCard}>
+      <View style={styles.gateIconWrap}>
+        <Ionicons name="receipt-outline" size={52} color={Colors.primary} />
+      </View>
+      <Text style={styles.gateTitle}>Application Fee Required</Text>
+      <Text style={styles.gateBody}>
+        To begin your KYC verification and access autopay plans, you need to pay a one-time application fee.
+      </Text>
+      <TouchableOpacity
+        style={styles.gateBtn}
+        onPress={() => router.push('/(main)/(vehicles)/application-fee')}
+        activeOpacity={0.85}
+      >
+        <Ionicons name="card-outline" size={18} color="#fff" />
+        <Text style={styles.gateBtnTxt}>Pay Application Fee</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function KycGateCard() {
+  return (
+    <View style={styles.gateCard}>
+      <View style={styles.gateIconWrap}>
+        <Ionicons name="shield-checkmark-outline" size={52} color={Colors.primary} />
+      </View>
+      <Text style={styles.gateTitle}>Complete Your KYC</Text>
+      <Text style={styles.gateBody}>
+        Verify your identity to unlock autopay plans and full access to Moses Transportation services.
+      </Text>
+      <TouchableOpacity
+        style={styles.gateBtn}
+        onPress={() => router.push('/(main)/(profile)/kyc/intro')}
+        activeOpacity={0.85}
+      >
+        <Ionicons name="arrow-forward-circle-outline" size={18} color="#fff" />
+        <Text style={styles.gateBtnTxt}>Complete KYC</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function TrackKycCard({ status }: { status: string }) {
   const rejected = status === 'rejected';
   return (
-    <TouchableOpacity
-      style={[styles.kycBanner, rejected && styles.kycBannerRed]}
-      onPress={() => router.push('/(main)/(profile)/kyc/intro')}
-      activeOpacity={0.8}
-    >
-      <View style={[styles.kycIcon, rejected && styles.kycIconRed]}>
-        <Ionicons name={rejected ? 'warning' : 'shield-checkmark'} size={16}
-          color={rejected ? '#DC2626' : '#D97706'} />
+    <View style={styles.gateCard}>
+      <View style={[styles.gateIconWrap, rejected && styles.gateIconWrapRed]}>
+        <Ionicons
+          name={rejected ? 'warning-outline' : 'time-outline'}
+          size={52}
+          color={rejected ? '#DC2626' : Colors.primary}
+        />
       </View>
-      <Text style={[styles.kycText, rejected && styles.kycTextRed]}>
-        {rejected
-          ? 'KYC rejected — tap to resubmit'
-          : status === 'pending'
-          ? 'KYC under review — we\'ll notify you'
-          : 'Complete KYC to unlock loans'}
+      <Text style={[styles.gateTitle, rejected && styles.gateTitleRed]}>
+        {rejected ? 'KYC Action Required' : 'KYC Under Review'}
       </Text>
-      {status !== 'pending' && (
-        <Ionicons name="chevron-forward" size={14}
-          color={rejected ? '#DC2626' : '#D97706'} />
-      )}
-    </TouchableOpacity>
+      <Text style={styles.gateBody}>
+        {rejected
+          ? 'Your submission was not approved. Review the admin feedback and resubmit to continue.'
+          : 'Your documents have been submitted and are currently being reviewed. We will notify you once a decision is made.'}
+      </Text>
+      <TouchableOpacity
+        style={[styles.gateBtn, rejected && styles.gateBtnRed]}
+        onPress={() => router.push('/(main)/(profile)/kyc/pending')}
+        activeOpacity={0.85}
+      >
+        <Ionicons name={rejected ? 'create-outline' : 'search-outline'} size={18} color="#fff" />
+        <Text style={styles.gateBtnTxt}>
+          {rejected ? 'View Feedback & Fix' : 'Track My Application'}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
@@ -134,7 +183,7 @@ function AccountCard({ user, loan }: { user: UserProfile; loan: ActiveLoan | nul
           <>
             <View style={styles.balanceStatSep} />
             <View style={styles.balanceStat}>
-              <Text style={styles.balanceLabel}>Loan Balance</Text>
+              <Text style={styles.balanceLabel}>Autopay Balance</Text>
               <Text style={[styles.balanceValue, styles.balanceValueRed]}>
                 {fmt(loan.total_balance)}
               </Text>
@@ -239,9 +288,9 @@ function NoLoanCard() {
       <View style={styles.noLoanIllustration}>
         <Ionicons name="bicycle-outline" size={44} color={Colors.primary} />
       </View>
-      <Text style={styles.noLoanTitle}>No active loan</Text>
+      <Text style={styles.noLoanTitle}>No active autopay</Text>
       <Text style={styles.noLoanSub}>
-        Browse available vehicles and apply for a daily or weekly payment plan.
+        Browse available vehicles and apply for a daily or weekly autopay plan.
       </Text>
       <TouchableOpacity
         style={styles.browseBtn}
@@ -346,9 +395,9 @@ function CongratulationsModal({ visible, onClose }: { visible: boolean; onClose:
             </View>
           </View>
 
-          <Text style={styles.congratsTitle}>Loan Cleared! 🎉</Text>
+          <Text style={styles.congratsTitle}>Autopay Cleared! 🎉</Text>
           <Text style={styles.congratsSub}>
-            Congratulations! You have successfully paid off your loan. Thank you for choosing Moses Transportation!
+            Congratulations! You have successfully completed your autopay plan. Thank you for choosing Moses Transportation!
           </Text>
 
           <TouchableOpacity style={styles.congratsBtn} onPress={onClose} activeOpacity={0.85}>
@@ -367,6 +416,13 @@ export default function HomeScreen() {
   const [paying, setPaying] = useState(false);
   const [payMsg, setPayMsg] = useState<string | null>(null);
   const [showCongrats, setShowCongrats] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
 
   const handlePayNow = async () => {
     setPaying(true);
@@ -390,7 +446,7 @@ export default function HomeScreen() {
     }
   };
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <SafeAreaView style={styles.centered}>
         <ActivityIndicator size="large" color={Colors.primary} />
@@ -440,64 +496,62 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.content}>
-          {/* KYC banner */}
-          <KycBanner status={user.kyc_status} />
-
-          {/* Virtual account */}
-          <AccountCard user={user} loan={loan} />
-
-          {/* Pay Now button — only show when there's an active loan */}
-          {loan && (
-            <View style={styles.payNowWrap}>
-              {payMsg ? (
-                <Text style={styles.payNowMsg}>{payMsg}</Text>
-              ) : null}
-              <TouchableOpacity
-                style={[styles.payNowBtn, paying && styles.payNowBtnDisabled]}
-                onPress={handlePayNow}
-                disabled={paying}
-                activeOpacity={0.85}
-              >
-                {paying ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <Ionicons name="flash" size={16} color="#fff" />
-                )}
-                <Text style={styles.payNowTxt}>
-                  {paying ? 'Processing...' : 'Pay Now'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* Active loan */}
-          <View style={styles.sectionRow}>
-            <Text style={styles.sectionTitle}>Active Loan</Text>
-          </View>
-          {loan ? <LoanCard loan={loan} /> : <NoLoanCard />}
-
-          {/* Recent payments */}
-          {recentPayments.length > 0 && (
+          {!user.application_fee_paid ? (
+            /* ── Fee gate ── */
+            <FeeGateCard />
+          ) : user.kyc_status === 'not_submitted' ? (
+            /* ── KYC gate ── */
+            <KycGateCard />
+          ) : user.kyc_status === 'pending' ? (
+            /* ── KYC pending — only show tracking card ── */
+            <TrackKycCard status="pending" />
+          ) : user.kyc_status === 'rejected' ? (
+            /* ── KYC rejected — only show tracking card ── */
+            <TrackKycCard status="rejected" />
+          ) : (
+            /* ── Approved — full dashboard ── */
             <>
+              <AccountCard user={user} loan={loan} />
+              {loan && (
+                <View style={styles.payNowWrap}>
+                  {payMsg ? <Text style={styles.payNowMsg}>{payMsg}</Text> : null}
+                  <TouchableOpacity
+                    style={[styles.payNowBtn, paying && styles.payNowBtnDisabled]}
+                    onPress={handlePayNow}
+                    disabled={paying}
+                    activeOpacity={0.85}
+                  >
+                    {paying ? <ActivityIndicator size="small" color="#fff" /> : <Ionicons name="flash" size={16} color="#fff" />}
+                    <Text style={styles.payNowTxt}>{paying ? 'Processing...' : 'Pay Now'}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               <View style={styles.sectionRow}>
-                <Text style={styles.sectionTitle}>Recent Payments</Text>
-                <TouchableOpacity onPress={() => router.push('/(main)/(payment)')}>
-                  <Text style={styles.seeAll}>See all</Text>
-                </TouchableOpacity>
+                <Text style={styles.sectionTitle}>Active Autopay</Text>
               </View>
-              <View style={styles.payCard}>
-                {recentPayments.map((p, i) => (
-                  <PaymentItem key={p.id} payment={p} last={i === recentPayments.length - 1} />
-                ))}
-              </View>
+              {loan ? <LoanCard loan={loan} /> : <NoLoanCard />}
+              {recentPayments.length > 0 && (
+                <>
+                  <View style={styles.sectionRow}>
+                    <Text style={styles.sectionTitle}>Recent Payments</Text>
+                    <TouchableOpacity onPress={() => router.push('/(main)/(payment)')}>
+                      <Text style={styles.seeAll}>See all</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.payCard}>
+                    {recentPayments.map((p, i) => (
+                      <PaymentItem key={p.id} payment={p} last={i === recentPayments.length - 1} />
+                    ))}
+                  </View>
+                </>
+              )}
+              {recentPayments.length === 0 && loan && (
+                <View style={styles.noPayments}>
+                  <Ionicons name="receipt-outline" size={28} color={Colors.secondary} />
+                  <Text style={styles.noPaymentsTxt}>No payments yet</Text>
+                </View>
+              )}
             </>
-          )}
-
-          {recentPayments.length === 0 && loan && (
-            <View style={styles.noPayments}>
-              <Ionicons name="receipt-outline" size={28} color={Colors.secondary} />
-              <Text style={styles.noPaymentsTxt}>No payments yet</Text>
-            </View>
           )}
         </View>
       </ScrollView>
@@ -537,21 +591,37 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: Typography.sizes.base, fontWeight: Typography.weights.semibold, color: Colors.text },
   seeAll: { fontSize: Typography.sizes.sm, color: Colors.primary, fontWeight: Typography.weights.medium },
 
-  // KYC banner
-  kycBanner: {
-    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
-    backgroundColor: '#FEF9EC', borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md, paddingVertical: 10,
-    borderWidth: 1, borderColor: '#FDE68A',
+  // Gate cards (fee / kyc not submitted)
+  gateCard: {
+    backgroundColor: '#fff', borderRadius: BorderRadius.xl,
+    padding: Spacing.xl, alignItems: 'center', gap: Spacing.md,
+    borderWidth: 1, borderColor: Colors.borderLight, ...Shadows.sm,
+    marginTop: Spacing.sm,
   },
-  kycBannerRed: { backgroundColor: '#FFF5F5', borderColor: '#FECACA' },
-  kycIcon: {
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#FEF3C7', justifyContent: 'center', alignItems: 'center',
+  gateIconWrap: {
+    width: 96, height: 96, borderRadius: 48,
+    backgroundColor: Colors.cardGreen,
+    justifyContent: 'center', alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
-  kycIconRed: { backgroundColor: '#FEE2E2' },
-  kycText: { flex: 1, fontSize: Typography.sizes.sm, color: '#92400E', fontWeight: Typography.weights.medium },
-  kycTextRed: { color: '#991B1B' },
+  gateTitle: {
+    fontSize: Typography.sizes.xl, fontWeight: Typography.weights.bold,
+    color: Colors.primary, textAlign: 'center',
+  },
+  gateBody: {
+    fontSize: Typography.sizes.base, color: Colors.textSecondary,
+    textAlign: 'center', lineHeight: 22, paddingHorizontal: Spacing.sm,
+  },
+  gateIconWrapRed: { backgroundColor: '#FEE2E2' },
+  gateBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.xs,
+    backgroundColor: Colors.primary, borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.xl, paddingVertical: 13,
+    marginTop: Spacing.xs, ...Shadows.sm,
+  },
+  gateBtnRed: { backgroundColor: '#DC2626' },
+  gateBtnTxt: { color: '#fff', fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold },
+  gateTitleRed: { color: '#991B1B' },
 
   // Account card
   accountCard: {

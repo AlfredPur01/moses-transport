@@ -21,12 +21,9 @@ export default function MainTabLayout() {
       />
       <Tabs.Screen
         name="(vehicles)"
-        options={{
-          title: 'Vehicles',
-          tabBarIcon: ({ color, size }) => <Ionicons name="bicycle-outline" size={size} color={color} />,
-        }}
+        options={{ href: null }}
       />
-      <Tabs.Screen
+<Tabs.Screen
         name="(payment)"
         options={{
           title: 'Payment',

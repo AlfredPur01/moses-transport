@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import {
   ActivityIndicator,
   Alert,
@@ -193,7 +194,7 @@ export default function ProfileScreen() {
               <ActionRow
                 icon="lock-closed-outline"
                 label="Change Password"
-                onPress={() => router.push('/(auth)/change-password')}
+                onPress={() => router.push('/(main)/(profile)/change-password')}
               />
               <View style={styles.rowDivider} />
               <ActionRow

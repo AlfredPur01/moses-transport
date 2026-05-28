@@ -9,9 +9,6 @@ export interface RegisterPayload {
   fullName: string;
   phone: string;
   password: string;
-  address: string;
-  stateOfOrigin: string;
-  localGovt: string;
 }
 
 export interface ForgotPasswordPayload {
@@ -46,6 +43,9 @@ export const authApi = {
 
   register: (data: RegisterPayload) =>
     apiClient.post<AuthResponse>('/api/auth/register', data),
+
+  changePassword: (data: { currentPassword: string; newPassword: string }) =>
+    apiClient.put<{ message: string }>('/api/auth/change-password', data),
 
   forgotPassword: (data: ForgotPasswordPayload) =>
     apiClient.post<{ message: string }>('/api/auth/forgot-password', data),

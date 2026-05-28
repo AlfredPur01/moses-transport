@@ -90,20 +90,16 @@ function getCtaLabel(status: KycStatus): string {
     case 'not_submitted':
       return 'Begin Verification';
     case 'rejected':
-      return 'Re-submit Verification';
+      return 'View Feedback and Fix';
     case 'pending':
-      return 'View Submission Status';
+      return 'Track My Application';
     case 'approved':
       return 'View Verified Status';
   }
 }
 
 function handleCta(status: KycStatus) {
-  if (status === 'not_submitted' || status === 'rejected') {
-    router.push('/(main)/(profile)/kyc/nin');
-  } else {
-    router.push('/(main)/(profile)/kyc/pending');
-  }
+  router.push('/(main)/(profile)/kyc/pending');
 }
 
 // ── Main screen ─────────────────────────────────────────────────────
@@ -149,6 +145,25 @@ export default function KycIntroScreen() {
             fullWidth={false}
           />
         </View>
+      ) : !profile?.application_fee_paid ? (
+        /* ── Fee gate ─────────────────────────────────────────── */
+        <View style={styles.centered}>
+          <View style={styles.feeGateIcon}>
+            <Ionicons name="receipt-outline" size={48} color={Colors.primary} />
+          </View>
+          <Text style={styles.feeGateTitle}>Application Fee Required</Text>
+          <Text style={styles.feeGateBody}>
+            You need to pay the application fee before you can complete your KYC verification.
+          </Text>
+          <Button
+            title="Pay Application Fee"
+            onPress={() => router.push('/(main)/(vehicles)/application-fee')}
+            style={styles.feeGateBtn}
+          />
+          <TouchableOpacity onPress={() => router.back()} style={styles.feeGateBack}>
+            <Text style={styles.feeGateBackTxt}>Go back</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -176,54 +191,66 @@ export default function KycIntroScreen() {
           {/* Rejected notice */}
           {profile?.kyc_status === 'rejected' ? (
             <View style={styles.rejectedBox}>
-              <Ionicons
-                name="warning-outline"
-                size={18}
-                color={Colors.badge.rejected.text}
-              />
+              <Ionicons name="warning-outline" size={18} color={Colors.badge.rejected.text} />
               <Text style={styles.rejectedText}>
-                Your previous submission was not approved. Please re-submit
-                with accurate information and a clear photo.
+                Your submission was not approved.
+                {profile.kyc_admin_note
+                  ? ` Admin note: "${profile.kyc_admin_note}"`
+                  : ' Tap "View Feedback and Fix" for details.'
+                }
               </Text>
             </View>
           ) : null}
 
-          {/* Steps */}
-          <View style={styles.stepsCard}>
-            <Text style={styles.stepsHeading}>4 easy steps</Text>
-            <StepRow
-              number={1}
-              title="NIN Details"
-              description="Enter your NIN number and take a photo of your NIN slip or ID card"
-            />
-            <View style={styles.stepDivider} />
-            <StepRow
-              number={2}
-              title="Take a Selfie"
-              description="Take a clear photo of your face using the front camera"
-            />
-            <View style={styles.stepDivider} />
-            <StepRow
-              number={3}
-              title="Your Address"
-              description="Provide your home address and contact details"
-            />
-            <View style={styles.stepDivider} />
-            <StepRow
-              number={4}
-              title="Guarantor Details"
-              description="Add a guarantor — their info, NIN, and NIN document photo"
-            />
-          </View>
+          {/* Pending notice */}
+          {profile?.kyc_status === 'pending' && profile.kyc_admin_note ? (
+            <View style={styles.pendingNoteBox}>
+              <Ionicons name="chatbox-outline" size={18} color="#92400e" />
+              <Text style={styles.pendingNoteText}>
+                Admin message: {profile.kyc_admin_note}
+              </Text>
+            </View>
+          ) : null}
 
-          {/* Security note */}
-          <View style={styles.securityNote}>
-            <Ionicons name="lock-closed-outline" size={16} color={Colors.primary} />
-            <Text style={styles.securityText}>
-              Your information is encrypted and secure. We will never share
-              your details without your consent.
-            </Text>
-          </View>
+          {/* Steps — only shown before submission */}
+          {(profile?.kyc_status === 'not_submitted') && (
+            <>
+              <View style={styles.stepsCard}>
+                <Text style={styles.stepsHeading}>4 easy steps</Text>
+                <StepRow
+                  number={1}
+                  title="NIN Details"
+                  description="Enter your NIN number and take a photo of your NIN slip or ID card"
+                />
+                <View style={styles.stepDivider} />
+                <StepRow
+                  number={2}
+                  title="Take a Selfie"
+                  description="Take a clear photo of your face using the front camera"
+                />
+                <View style={styles.stepDivider} />
+                <StepRow
+                  number={3}
+                  title="Your Address"
+                  description="Provide your home address and contact details"
+                />
+                <View style={styles.stepDivider} />
+                <StepRow
+                  number={4}
+                  title="Guarantor Details"
+                  description="Add a guarantor — their info, NIN, and NIN document photo"
+                />
+              </View>
+
+              <View style={styles.securityNote}>
+                <Ionicons name="lock-closed-outline" size={16} color={Colors.primary} />
+                <Text style={styles.securityText}>
+                  Your information is encrypted and secure. We will never share
+                  your details without your consent.
+                </Text>
+              </View>
+            </>
+          )}
 
           {/* CTA */}
           <Button
@@ -357,6 +384,23 @@ const styles = StyleSheet.create({
     color: Colors.badge.rejected.text,
     lineHeight: Typography.sizes.sm * 1.6,
   },
+  pendingNoteBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: Spacing.sm,
+    backgroundColor: '#fffbeb',
+    borderWidth: 1,
+    borderColor: '#fcd34d',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  pendingNoteText: {
+    flex: 1,
+    fontSize: Typography.sizes.sm,
+    color: '#78350f',
+    lineHeight: Typography.sizes.sm * 1.6,
+  },
   stepsCard: {
     backgroundColor: Colors.card,
     borderRadius: BorderRadius.lg,
@@ -435,6 +479,43 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
   },
   officeLinkText: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+    textDecorationLine: 'underline',
+  },
+
+  // Fee gate
+  feeGateIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: Colors.cardGreen,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  feeGateTitle: {
+    fontSize: Typography.sizes.xl,
+    fontWeight: Typography.weights.bold,
+    color: Colors.text,
+    textAlign: 'center',
+  },
+  feeGateBody: {
+    fontSize: Typography.sizes.base,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: Spacing.md,
+  },
+  feeGateBtn: {
+    marginTop: Spacing.sm,
+    width: '100%',
+  },
+  feeGateBack: {
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+  feeGateBackTxt: {
     fontSize: Typography.sizes.sm,
     color: Colors.textSecondary,
     textDecorationLine: 'underline',

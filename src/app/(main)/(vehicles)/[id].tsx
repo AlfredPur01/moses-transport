@@ -51,7 +51,7 @@ export default function VehicleDetailScreen() {
       await assetApi.applyForLoan(asset.id, frequency);
       Alert.alert(
         'Application Submitted',
-        'Your loan application has been submitted. We will review it and notify you shortly.',
+        'Your application has been submitted. We will review it and notify you shortly.',
         [{ text: 'OK', onPress: () => router.back() }]
       );
     } catch (err: any) {

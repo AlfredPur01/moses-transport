@@ -15,7 +15,6 @@ export function useRegister() {
     try {
       const { data } = await authApi.register(payload);
       await setToken(data.token);
-      // AuthNavigator in _layout.tsx handles the redirect automatically
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Registration failed. Please try again.');
     } finally {

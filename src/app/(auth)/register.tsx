@@ -17,8 +17,6 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { NIGERIAN_STATES } from '@/constants/nigeria';
 import { BorderRadius, Colors, Spacing, Typography } from '@/constants/theme';
 import { useRegister } from '@/hooks/useRegister';
 
@@ -34,15 +32,6 @@ const registerSchema = z.object({
     .string()
     .min(6, 'Password must be at least 6 characters')
     .max(50, 'Password is too long'),
-  address: z
-    .string()
-    .min(5, 'Please enter your full address')
-    .max(200, 'Address is too long'),
-  stateOfOrigin: z.string().min(1, 'Please select your state of origin'),
-  localGovt: z
-    .string()
-    .min(2, 'Please enter your local government area')
-    .max(100, 'LGA name is too long'),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -57,20 +46,14 @@ export default function RegisterScreen() {
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullName: '',
-      phone: '',
-      password: '',
-      address: '',
-      stateOfOrigin: '',
-      localGovt: '',
-    },
+    defaultValues: { fullName: '', phone: '', password: '' },
   });
 
   const onSubmit = (data: RegisterFormData) => {
     handleRegister({
-      ...data,
+      fullName: data.fullName,
       phone: `+234${data.phone}`,
+      password: data.password,
     });
   };
 
@@ -80,7 +63,6 @@ export default function RegisterScreen() {
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.back()}
@@ -98,14 +80,11 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Subheading */}
           <Text style={styles.subheading}>
             Join Moses Transport and start your journey today.
           </Text>
 
-          {/* Form */}
           <View style={styles.form}>
-            {/* Full Name */}
             <Controller
               name="fullName"
               control={control}
@@ -122,7 +101,6 @@ export default function RegisterScreen() {
               )}
             />
 
-            {/* Phone */}
             <Controller
               name="phone"
               control={control}
@@ -146,7 +124,6 @@ export default function RegisterScreen() {
               )}
             />
 
-            {/* Password */}
             <Controller
               name="password"
               control={control}
@@ -175,59 +152,6 @@ export default function RegisterScreen() {
               )}
             />
 
-            {/* Address */}
-            <Controller
-              name="address"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Home Address"
-                  placeholder="e.g. 12 Aba Road, Rumuola"
-                  autoCapitalize="words"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.address?.message}
-                  multiline
-                  style={styles.addressInput}
-                />
-              )}
-            />
-
-            {/* State of Origin */}
-            <Controller
-              name="stateOfOrigin"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Select
-                  label="State of Origin"
-                  placeholder="Select your state"
-                  value={value}
-                  options={NIGERIAN_STATES}
-                  onChange={onChange}
-                  error={errors.stateOfOrigin?.message}
-                />
-              )}
-            />
-
-            {/* Local Government */}
-            <Controller
-              name="localGovt"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Local Government Area"
-                  placeholder="e.g. Obio-Akpor"
-                  autoCapitalize="words"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.localGovt?.message}
-                />
-              )}
-            />
-
-            {/* API Error */}
             {error ? (
               <View style={styles.errorBox}>
                 <Ionicons
@@ -246,7 +170,6 @@ export default function RegisterScreen() {
               </View>
             ) : null}
 
-            {/* Submit */}
             <Button
               title="Create Account"
               loading={loading}
@@ -254,7 +177,6 @@ export default function RegisterScreen() {
             />
           </View>
 
-          {/* Login Link */}
           <View style={styles.loginRow}>
             <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => router.back()}>
@@ -268,13 +190,9 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
+  flex: { flex: 1 },
+  container: { flex: 1, backgroundColor: Colors.background },
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -283,9 +201,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
   },
-  backBtn: {
-    padding: Spacing.xs,
-  },
+  backBtn: { padding: Spacing.xs },
   headerTitle: {
     flex: 1,
     textAlign: 'center',
@@ -293,9 +209,8 @@ const styles = StyleSheet.create({
     fontWeight: Typography.weights.semibold,
     color: Colors.primary,
   },
-  headerSpacer: {
-    width: 32,
-  },
+  headerSpacer: { width: 32 },
+
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: Spacing.lg,
@@ -308,31 +223,16 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
     lineHeight: Typography.sizes.base * 1.5,
   },
-  form: {
-    gap: Spacing.md,
-  },
-  phonePrefix: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
+  form: { gap: Spacing.md },
+
+  phonePrefix: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   phonePrefixText: {
     fontSize: Typography.sizes.base,
     fontWeight: Typography.weights.medium,
     color: Colors.text,
   },
-  phoneDivider: {
-    width: 1,
-    height: 20,
-    backgroundColor: Colors.border,
-  },
-  addressInput: {
-    height: 'auto',
-    minHeight: 52,
-    paddingTop: 14,
-    paddingBottom: 14,
-    textAlignVertical: 'top',
-  },
+  phoneDivider: { width: 1, height: 20, backgroundColor: Colors.border },
+
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -342,33 +242,23 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     gap: Spacing.xs,
   },
-  errorIcon: {
-    flexShrink: 0,
-  },
-  errorText: {
-    flex: 1,
-    fontSize: Typography.sizes.sm,
-    color: Colors.error,
-  },
-  retryBtn: {
-    flexShrink: 0,
-  },
+  errorIcon: { flexShrink: 0 },
+  errorText: { flex: 1, fontSize: Typography.sizes.sm, color: Colors.error },
+  retryBtn: { flexShrink: 0 },
   retryText: {
     fontSize: Typography.sizes.sm,
     fontWeight: Typography.weights.semibold,
     color: Colors.error,
     textDecorationLine: 'underline',
   },
+
   loginRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: Spacing.xl,
   },
-  loginText: {
-    fontSize: Typography.sizes.base,
-    color: Colors.textSecondary,
-  },
+  loginText: { fontSize: Typography.sizes.base, color: Colors.textSecondary },
   loginLink: {
     fontSize: Typography.sizes.base,
     fontWeight: Typography.weights.semibold,
