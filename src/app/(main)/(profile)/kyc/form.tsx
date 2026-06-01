@@ -564,7 +564,7 @@ export default function KycFormScreen() {
     );
   }
 
-  if (!profile?.application_fee_paid) {
+  if (profile?.application_fee_paid === false) {
     return (
       <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 }]}>
         <View style={{ width: 88, height: 88, borderRadius: 44, backgroundColor: Colors.cardGreen, justifyContent: 'center', alignItems: 'center' }}>

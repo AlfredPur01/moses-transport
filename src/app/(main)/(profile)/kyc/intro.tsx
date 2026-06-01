@@ -145,7 +145,7 @@ export default function KycIntroScreen() {
             fullWidth={false}
           />
         </View>
-      ) : !profile?.application_fee_paid ? (
+      ) : profile?.application_fee_paid === false ? (
         /* ── Fee gate ─────────────────────────────────────────── */
         <View style={styles.centered}>
           <View style={styles.feeGateIcon}>
