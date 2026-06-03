@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "635193723533",
+    "project_id": "moses-transport",
+    "storage_bucket": "moses-transport.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635193723533:android:3e11648a37b420459770c4",
+        "android_client_info": {
+          "package_name": "com.topnotchtech.mosestransport"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtJcaQOo0Bc6bogNYAbbzpp59BZyRC0KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635193723533:android:685ca34f3a6691ef9770c4",
+        "android_client_info": {
+          "package_name": "moses.transport"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtJcaQOo0Bc6bogNYAbbzpp59BZyRC0KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
