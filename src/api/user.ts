@@ -89,6 +89,7 @@ export interface Notification {
   type: string;
   title: string;
   message: string;
+  is_read: boolean;
   created_at: string;
 }
 
@@ -166,4 +167,10 @@ export const userApi = {
 
   savePushToken: (pushToken: string) =>
     apiClient.put<null>('/api/user/push-token', { pushToken }),
+
+  getNotifications: () =>
+    apiClient.get<Notification[]>('/api/user/notifications'),
+
+  markNotificationRead: (id: string) =>
+    apiClient.put<null>(`/api/user/notifications/${id}/read`),
 };

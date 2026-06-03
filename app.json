@@ -24,7 +24,8 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.topnotchtech.mosestransport"
+      "package": "com.topnotchtech.mosestransport",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
