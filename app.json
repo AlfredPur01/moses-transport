@@ -49,6 +49,13 @@
           }
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Moses Transport needs access to your photos to upload your KYC selfie and documents.",
+          "cameraPermission": "Moses Transport needs camera access to take your selfie and document photos."
+        }
+      ],
       "@react-native-community/datetimepicker",
       [
         "expo-notifications",
