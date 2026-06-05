@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -199,6 +198,7 @@ function PhotoPicker({
   label: string; hint: string; uri: string | null; onPick: (uri: string, base64: string) => void;
 }) {
   const pick = async (fromCamera: boolean) => {
+    const ImagePicker = await import('expo-image-picker');
     const { status } = fromCamera
       ? await ImagePicker.requestCameraPermissionsAsync()
       : await ImagePicker.requestMediaLibraryPermissionsAsync();

@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -66,16 +65,12 @@ export default function NinScreen() {
   const isReady = ninValue.length === 11 && !!docUri;
 
   const pickImage = async (fromCamera: boolean) => {
-    let permStatus: ImagePicker.PermissionStatus;
-    if (fromCamera) {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      permStatus = status;
-    } else {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      permStatus = status;
-    }
+    const ImagePicker = await import('expo-image-picker');
+    const { status } = fromCamera
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (permStatus !== 'granted') {
+    if (status !== 'granted') {
       Alert.alert(
         'Permission needed',
         fromCamera
