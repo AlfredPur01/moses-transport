@@ -8,24 +8,26 @@ import { Colors } from '@/constants/theme';
 import { registerForPushNotificationsAsync } from '@/utils/pushNotifications';
 
 function AuthNavigator() {
-  const { token, isLoading } = useAuth();
+  const { token, phoneVerified, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
   const pushRegistered = useRef(false);
 
   useEffect(() => {
     if (isLoading) return;
-    const inAuth = segments[0] === '(auth)';
-    const inMain = segments[0] === '(main)';
+    const inAuth    = segments[0] === '(auth)';
+    const inMain    = segments[0] === '(main)';
+    const inVerify  = inAuth && segments[1] === 'verify-phone';
 
     if (!token && !inAuth) {
-      // Not logged in and not already on an auth screen → go to login
       router.replace('/(auth)/login');
-    } else if (token && !inMain) {
-      // Logged in but on splash/index or auth screen → go to home
+    } else if (token && !phoneVerified && !inVerify) {
+      // Logged in but phone not verified → must verify first
+      router.replace('/(auth)/verify-phone');
+    } else if (token && phoneVerified && !inMain) {
       router.replace('/(main)/(home)');
     }
-  }, [token, isLoading, segments]);
+  }, [token, phoneVerified, isLoading, segments]);
 
   // Register push token once per session after login
   useEffect(() => {

@@ -14,7 +14,7 @@ export function useRegister() {
     setError(null);
     try {
       const { data } = await authApi.register(payload);
-      await setToken(data.token);
+      await setToken(data.token, data.user.phone_verified ?? false);
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Registration failed. Please try again.');
     } finally {

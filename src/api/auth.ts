@@ -28,6 +28,7 @@ export interface AuthUser {
   role: string;
   status: string;
   kyc_status: 'not_submitted' | 'pending' | 'approved' | 'rejected';
+  phone_verified: boolean;
   virtual_account_number?: string;
   virtual_bank_name?: string;
 }
@@ -43,6 +44,12 @@ export const authApi = {
 
   register: (data: RegisterPayload) =>
     apiClient.post<AuthResponse>('/api/auth/register', data),
+
+  verifyPhone: (otp: string) =>
+    apiClient.post<null>('/api/auth/verify-phone', { otp }),
+
+  resendOtp: () =>
+    apiClient.post<null>('/api/auth/resend-otp', {}),
 
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     apiClient.put<{ message: string }>('/api/auth/change-password', data),

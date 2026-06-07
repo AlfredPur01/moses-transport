@@ -433,14 +433,26 @@ export default function KycFormScreen() {
 
   const canAdvance = () => {
     switch (step) {
-      case 0: return !!fullName.trim() && !!dob && !!gender && !!maritalStatus;
+      case 0: return !!fullName.trim() && !!dob && !!gender && !!maritalStatus && !!passportUri;
       case 1: return !!address.trim() && !!landmark.trim() && !!lengthOfStay.trim();
-      case 2: return !!idType && !!idNumber.trim();
+      case 2: return !!idType && !!idNumber.trim() && !!idDocUri;
       case 3: return true;
       case 4: return !!stateOfOrigin.trim() && !!localGovt.trim();
-      case 5: return !!rel1Name.trim() && !!rel1Phone.trim();
-      case 6: return !!gName.trim() && !!gPhone.trim() && gConsent && !!g2Name.trim() && !!g2Phone.trim() && g2Consent;
-      case 7: return consentData && consentAsset;
+      case 5: return (
+        !!rel1Name.trim() && !!rel1Phone.trim() && !!rel1Addr.trim() &&
+        !!rel2Name.trim() && !!rel2Phone.trim() && !!rel2Addr.trim()
+      );
+      case 6: return (
+        !!gName.trim() && !!gPhone.trim() && !!gAltPhone.trim() &&
+        !!gRelType && !!gYears.trim() && !!gAddress.trim() && !!gWorkplace.trim() &&
+        !!gState.trim() && !!gLga.trim() && !!gIdType.trim() && !!gIdNum.trim() &&
+        !!gOccupation.trim() && !!gEmployer.trim() && !!gPhotoUri && gConsent &&
+        !!g2Name.trim() && !!g2Phone.trim() && !!g2AltPhone.trim() &&
+        !!g2RelType && !!g2Years.trim() && !!g2Address.trim() && !!g2Workplace.trim() &&
+        !!g2State.trim() && !!g2Lga.trim() && !!g2IdType.trim() && !!g2IdNum.trim() &&
+        !!g2Occupation.trim() && !!g2Employer.trim() && !!g2PhotoUri && g2Consent
+      );
+      case 7: return consentData && consentAsset && !!sigUri;
       default: return false;
     }
   };
@@ -649,7 +661,7 @@ export default function KycFormScreen() {
                 ]}
               />
               <PhotoPicker
-                label="Passport Photograph"
+                label="Passport Photograph *"
                 hint="Clear photo of your face against a plain background"
                 uri={passportUri}
                 onPick={(u, b) => { setPassportUri(u); setPassportB64(b); }}
@@ -683,7 +695,7 @@ export default function KycFormScreen() {
               />
               <Field label="ID Number *" value={idNumber} onChange={setIdNumber} placeholder="Enter your ID number" keyboardType="default" />
               <PhotoPicker
-                label="Upload ID Document"
+                label="Upload ID Document *"
                 hint="Clear photo of your selected ID document"
                 uri={idDocUri}
                 onPick={(u, b) => { setIdDocUri(u); setIdDocB64(b); }}
@@ -724,13 +736,13 @@ export default function KycFormScreen() {
               </View>
               <Field label="Full Name *" value={rel1Name} onChange={setRel1Name} placeholder="Relative's full name" />
               <Field label="Phone *" value={rel1Phone} onChange={setRel1Phone} placeholder="+2348012345678" keyboardType="phone-pad" />
-              <Field label="Address" value={rel1Addr} onChange={setRel1Addr} placeholder="Relative's address" multiline />
+              <Field label="Address *" value={rel1Addr} onChange={setRel1Addr} placeholder="Relative's address" multiline />
               <View style={styles.sectionDivider}>
-                <Text style={styles.sectionLabel}>Relative 2 (Optional)</Text>
+                <Text style={styles.sectionLabel}>Relative 2 *</Text>
               </View>
-              <Field label="Full Name" value={rel2Name} onChange={setRel2Name} placeholder="Relative's full name" />
-              <Field label="Phone" value={rel2Phone} onChange={setRel2Phone} placeholder="+2348012345678" keyboardType="phone-pad" />
-              <Field label="Address" value={rel2Addr} onChange={setRel2Addr} placeholder="Relative's address" multiline />
+              <Field label="Full Name *" value={rel2Name} onChange={setRel2Name} placeholder="Relative's full name" />
+              <Field label="Phone *" value={rel2Phone} onChange={setRel2Phone} placeholder="+2348012345678" keyboardType="phone-pad" />
+              <Field label="Address *" value={rel2Addr} onChange={setRel2Addr} placeholder="Relative's address" multiline />
             </>
           )}
 
@@ -742,9 +754,9 @@ export default function KycFormScreen() {
               </View>
               <Field label="Full Name *" value={gName} onChange={setGName} placeholder="Guarantor's full name" />
               <Field label="Phone *" value={gPhone} onChange={setGPhone} placeholder="+2348012345678" keyboardType="phone-pad" />
-              <Field label="Alternate Phone" value={gAltPhone} onChange={setGAltPhone} placeholder="+2348012345678" keyboardType="phone-pad" />
+              <Field label="Alternate Phone *" value={gAltPhone} onChange={setGAltPhone} placeholder="+2348012345678" keyboardType="phone-pad" />
               <SelectRow<RelationshipType>
-                label="Relationship Type"
+                label="Relationship Type *"
                 value={gRelType}
                 onChange={setGRelType}
                 options={[
@@ -755,17 +767,17 @@ export default function KycFormScreen() {
                   { label: 'Other', value: 'other' },
                 ]}
               />
-              <Field label="Years of Relationship" value={gYears} onChange={setGYears} placeholder="e.g. 5" keyboardType="number-pad" />
-              <Field label="House Address" value={gAddress} onChange={setGAddress} placeholder="Guarantor's home address" multiline />
-              <Field label="Workplace Address" value={gWorkplace} onChange={setGWorkplace} placeholder="Guarantor's workplace" multiline />
-              <Field label="State" value={gState} onChange={setGState} placeholder="e.g. Lagos" />
-              <Field label="LGA" value={gLga} onChange={setGLga} placeholder="e.g. Surulere" />
-              <Field label="ID Type" value={gIdType} onChange={setGIdType} placeholder="NIN / Voter's Card / etc." />
-              <Field label="ID Number" value={gIdNum} onChange={setGIdNum} placeholder="Guarantor's ID number" />
-              <Field label="Occupation" value={gOccupation} onChange={setGOccupation} placeholder="e.g. Teacher" />
-              <Field label="Employer / Business Name" value={gEmployer} onChange={setGEmployer} placeholder="Where they work or business name" />
+              <Field label="Years of Relationship *" value={gYears} onChange={setGYears} placeholder="e.g. 5" keyboardType="number-pad" />
+              <Field label="House Address *" value={gAddress} onChange={setGAddress} placeholder="Guarantor's home address" multiline />
+              <Field label="Workplace Address *" value={gWorkplace} onChange={setGWorkplace} placeholder="Guarantor's workplace" multiline />
+              <Field label="State *" value={gState} onChange={setGState} placeholder="e.g. Lagos" />
+              <Field label="LGA *" value={gLga} onChange={setGLga} placeholder="e.g. Surulere" />
+              <Field label="ID Type *" value={gIdType} onChange={setGIdType} placeholder="NIN / Voter's Card / etc." />
+              <Field label="ID Number *" value={gIdNum} onChange={setGIdNum} placeholder="Guarantor's ID number" />
+              <Field label="Occupation *" value={gOccupation} onChange={setGOccupation} placeholder="e.g. Teacher" />
+              <Field label="Employer / Business Name *" value={gEmployer} onChange={setGEmployer} placeholder="Where they work or business name" />
               <PhotoPicker
-                label="Guarantor Passport Photo"
+                label="Guarantor Passport Photo *"
                 hint="Clear passport-style photo of the guarantor"
                 uri={gPhotoUri}
                 onPick={(u, b) => { setGPhotoUri(u); setGPhotoB64(b); }}
@@ -788,9 +800,9 @@ export default function KycFormScreen() {
               </View>
               <Field label="Full Name *" value={g2Name} onChange={setG2Name} placeholder="Guarantor's full name" />
               <Field label="Phone *" value={g2Phone} onChange={setG2Phone} placeholder="+2348012345678" keyboardType="phone-pad" />
-              <Field label="Alternate Phone" value={g2AltPhone} onChange={setG2AltPhone} placeholder="+2348012345678" keyboardType="phone-pad" />
+              <Field label="Alternate Phone *" value={g2AltPhone} onChange={setG2AltPhone} placeholder="+2348012345678" keyboardType="phone-pad" />
               <SelectRow<RelationshipType>
-                label="Relationship Type"
+                label="Relationship Type *"
                 value={g2RelType}
                 onChange={setG2RelType}
                 options={[
@@ -801,17 +813,17 @@ export default function KycFormScreen() {
                   { label: 'Other',     value: 'other' },
                 ]}
               />
-              <Field label="Years of Relationship" value={g2Years} onChange={setG2Years} placeholder="e.g. 3" keyboardType="number-pad" />
-              <Field label="House Address" value={g2Address} onChange={setG2Address} placeholder="Guarantor's home address" multiline />
-              <Field label="Workplace Address" value={g2Workplace} onChange={setG2Workplace} placeholder="Guarantor's workplace" multiline />
-              <Field label="State" value={g2State} onChange={setG2State} placeholder="e.g. Lagos" />
-              <Field label="LGA" value={g2Lga} onChange={setG2Lga} placeholder="e.g. Surulere" />
-              <Field label="ID Type" value={g2IdType} onChange={setG2IdType} placeholder="NIN / Voter's Card / etc." />
-              <Field label="ID Number" value={g2IdNum} onChange={setG2IdNum} placeholder="Guarantor's ID number" />
-              <Field label="Occupation" value={g2Occupation} onChange={setG2Occupation} placeholder="e.g. Teacher" />
-              <Field label="Employer / Business Name" value={g2Employer} onChange={setG2Employer} placeholder="Where they work" />
+              <Field label="Years of Relationship *" value={g2Years} onChange={setG2Years} placeholder="e.g. 3" keyboardType="number-pad" />
+              <Field label="House Address *" value={g2Address} onChange={setG2Address} placeholder="Guarantor's home address" multiline />
+              <Field label="Workplace Address *" value={g2Workplace} onChange={setG2Workplace} placeholder="Guarantor's workplace" multiline />
+              <Field label="State *" value={g2State} onChange={setG2State} placeholder="e.g. Lagos" />
+              <Field label="LGA *" value={g2Lga} onChange={setG2Lga} placeholder="e.g. Surulere" />
+              <Field label="ID Type *" value={g2IdType} onChange={setG2IdType} placeholder="NIN / Voter's Card / etc." />
+              <Field label="ID Number *" value={g2IdNum} onChange={setG2IdNum} placeholder="Guarantor's ID number" />
+              <Field label="Occupation *" value={g2Occupation} onChange={setG2Occupation} placeholder="e.g. Teacher" />
+              <Field label="Employer / Business Name *" value={g2Employer} onChange={setG2Employer} placeholder="Where they work" />
               <PhotoPicker
-                label="Guarantor 2 Passport Photo"
+                label="Guarantor 2 Passport Photo *"
                 hint="Clear passport-style photo of the guarantor"
                 uri={g2PhotoUri}
                 onPick={(u, b) => { setG2PhotoUri(u); setG2PhotoB64(b); }}
@@ -861,7 +873,7 @@ export default function KycFormScreen() {
               </TouchableOpacity>
 
               <PhotoPicker
-                label="Customer Signature"
+                label="Customer Signature *"
                 hint="Draw your signature on paper and take a photo, or upload a signature image"
                 uri={sigUri}
                 onPick={(u, b) => { setSigUri(u); setSigB64(b); }}

@@ -14,7 +14,7 @@ export function useLogin() {
     setError(null);
     try {
       const { data } = await authApi.login({ phone: `+234${phone}`, password });
-      await setToken(data.token);
+      await setToken(data.token, data.user.phone_verified ?? false);
       // AuthNavigator in _layout.tsx handles the redirect automatically
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Login failed. Please try again.');
