@@ -99,12 +99,12 @@ export default function VerifyPhoneScreen() {
         <View style={styles.content}>
           {/* Icon */}
           <View style={styles.iconWrap}>
-            <Ionicons name="phone-portrait-outline" size={48} color={Colors.primary} />
+            <Ionicons name="mail-outline" size={48} color={Colors.primary} />
           </View>
 
-          <Text style={styles.title}>Verify Your Number</Text>
+          <Text style={styles.title}>Verify Your Email</Text>
           <Text style={styles.subtitle}>
-            We sent a 6-digit code to your phone number. Enter it below to continue.
+            We sent a 6-digit code to your email address. Enter it below to continue.
           </Text>
 
           {/* OTP boxes */}

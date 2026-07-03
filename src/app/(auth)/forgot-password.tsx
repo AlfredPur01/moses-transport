@@ -74,9 +74,9 @@ export default function ForgotPasswordScreen() {
 
           <Text style={styles.successHeading}>OTP Sent!</Text>
           <Text style={styles.successBody}>
-            We've sent a 6-digit OTP to the phone number linked to{'\n'}
+            We've sent a 6-digit OTP to{'\n'}
             <Text style={styles.successPhone}>{email}</Text>
-            {'\n\n'}Check your SMS and enter the code on the next screen.
+            {'\n\n'}Check your inbox and enter the code on the next screen.
           </Text>
 
           <Button
@@ -140,7 +140,7 @@ export default function ForgotPasswordScreen() {
           <Text style={styles.heading}>Reset your password</Text>
           <Text style={styles.subheading}>
             Enter the email address linked to your Moses Transport account.
-            We'll send a one-time OTP to your phone number.
+            We'll send a one-time OTP to your email.
           </Text>
 
           {/* Form */}
