@@ -20,9 +20,10 @@ import { BorderRadius, Colors, Spacing, Typography } from '@/constants/theme';
 import { useForgotPassword } from '@/hooks/useForgotPassword';
 
 const schema = z.object({
-  phone: z
+  email: z
     .string()
-    .regex(/^\d{10}$/, 'Enter a valid 10-digit phone number'),
+    .min(1, 'Email is required')
+    .email('Enter a valid email address'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -38,16 +39,16 @@ export default function ForgotPasswordScreen() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { phone: '' },
+    defaultValues: { email: '' },
   });
 
   const onSubmit = (data: FormData) => {
-    handleForgotPassword(data.phone);
+    handleForgotPassword(data.email);
   };
 
   // ── Success state ──────────────────────────────────────────────────
   if (success) {
-    const phone = getValues('phone');
+    const email = getValues('email');
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -73,8 +74,8 @@ export default function ForgotPasswordScreen() {
 
           <Text style={styles.successHeading}>OTP Sent!</Text>
           <Text style={styles.successBody}>
-            We've sent a 6-digit OTP to{'\n'}
-            <Text style={styles.successPhone}>+234{phone}</Text>
+            We've sent a 6-digit OTP to the phone number linked to{'\n'}
+            <Text style={styles.successPhone}>{email}</Text>
             {'\n\n'}Check your SMS and enter the code on the next screen.
           </Text>
 
@@ -83,14 +84,14 @@ export default function ForgotPasswordScreen() {
             onPress={() =>
               router.push({
                 pathname: '/(auth)/reset-password',
-                params: { phone: `+234${phone}` },
+                params: { email },
               })
             }
             style={styles.successBtn}
           />
 
           <TouchableOpacity
-            onPress={() => handleForgotPassword(phone)}
+            onPress={() => handleForgotPassword(email)}
             disabled={loading}
             style={styles.resendBtn}
           >
@@ -138,31 +139,26 @@ export default function ForgotPasswordScreen() {
           {/* Heading */}
           <Text style={styles.heading}>Reset your password</Text>
           <Text style={styles.subheading}>
-            Enter the phone number linked to your Moses Transport account.
-            We'll send a one-time OTP to verify it's you.
+            Enter the email address linked to your Moses Transport account.
+            We'll send a one-time OTP to your phone number.
           </Text>
 
           {/* Form */}
           <View style={styles.form}>
             <Controller
-              name="phone"
+              name="email"
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Phone Number"
-                  placeholder="8012345678"
-                  keyboardType="phone-pad"
-                  maxLength={10}
+                  label="Email Address"
+                  placeholder="you@example.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  error={errors.phone?.message}
-                  leftElement={
-                    <View style={styles.phonePrefix}>
-                      <Text style={styles.phonePrefixText}>+234</Text>
-                      <View style={styles.phoneDivider} />
-                    </View>
-                  }
+                  error={errors.email?.message}
                 />
               )}
             />

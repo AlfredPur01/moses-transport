@@ -141,7 +141,7 @@ const otpStyles = StyleSheet.create({
 
 // ── Main screen ─────────────────────────────────────────────────────
 export default function ResetPasswordScreen() {
-  const { phone } = useLocalSearchParams<{ phone: string }>();
+  const { email } = useLocalSearchParams<{ email: string }>();
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const { handleResetPassword, loading, error } = useResetPassword();
@@ -156,7 +156,7 @@ export default function ResetPasswordScreen() {
   });
 
   const onSubmit = (data: FormData) => {
-    handleResetPassword(phone ?? '', data.otp, data.newPassword);
+    handleResetPassword(email ?? '', data.otp, data.newPassword);
   };
 
   return (
@@ -191,10 +191,10 @@ export default function ResetPasswordScreen() {
           </View>
 
           <Text style={styles.heading}>Create new password</Text>
-          {phone ? (
+          {email ? (
             <Text style={styles.subheading}>
-              Enter the OTP sent to{' '}
-              <Text style={styles.phoneHighlight}>{phone}</Text> and choose a
+              Enter the OTP sent to your phone for{' '}
+              <Text style={styles.phoneHighlight}>{email}</Text> and choose a
               new password.
             </Text>
           ) : null}

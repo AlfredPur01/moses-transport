@@ -25,6 +25,10 @@ const registerSchema = z.object({
     .string()
     .min(2, 'Full name must be at least 2 characters')
     .max(100, 'Name is too long'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Enter a valid email address'),
   phone: z
     .string()
     .regex(/^\d{10}$/, 'Enter a valid 10-digit phone number'),
@@ -46,12 +50,13 @@ export default function RegisterScreen() {
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { fullName: '', phone: '', password: '' },
+    defaultValues: { fullName: '', email: '', phone: '', password: '' },
   });
 
   const onSubmit = (data: RegisterFormData) => {
     handleRegister({
       fullName: data.fullName,
+      email: data.email,
       phone: `+234${data.phone}`,
       password: data.password,
     });
@@ -97,6 +102,24 @@ export default function RegisterScreen() {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   error={errors.fullName?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="email"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Email Address"
+                  placeholder="you@example.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  error={errors.email?.message}
                 />
               )}
             />

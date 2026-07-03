@@ -22,10 +22,10 @@ import { BorderRadius, Colors, Spacing, Typography } from '@/constants/theme';
 import { useLogin } from '@/hooks/useLogin';
 
 const loginSchema = z.object({
-  phone: z
+  email: z
     .string()
-    .min(1, 'Phone number is required')
-    .regex(/^\d{10}$/, 'Enter a valid 10-digit phone number'),
+    .min(1, 'Email is required')
+    .email('Enter a valid email address'),
   password: z
     .string()
     .min(1, 'Password is required')
@@ -44,11 +44,11 @@ export default function LoginScreen() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { phone: '', password: '' },
+    defaultValues: { email: '', password: '' },
   });
 
   const onSubmit = (data: LoginFormData) => {
-    handleLogin(data.phone, data.password);
+    handleLogin(data.email, data.password);
   };
 
   return (
@@ -79,26 +79,21 @@ export default function LoginScreen() {
 
           {/* Form */}
           <View style={styles.form}>
-            {/* Phone */}
+            {/* Email */}
             <Controller
-              name="phone"
+              name="email"
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Phone Number"
-                  placeholder="8012345678"
-                  keyboardType="phone-pad"
-                  maxLength={10}
+                  label="Email Address"
+                  placeholder="you@example.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  error={errors.phone?.message}
-                  leftElement={
-                    <View style={styles.phonePrefix}>
-                      <Text style={styles.phonePrefixText}>+234</Text>
-                      <View style={styles.phoneDivider} />
-                    </View>
-                  }
+                  error={errors.email?.message}
                 />
               )}
             />
@@ -217,21 +212,6 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: Spacing.md,
-  },
-  phonePrefix: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  phonePrefixText: {
-    fontSize: Typography.sizes.base,
-    fontWeight: Typography.weights.medium,
-    color: Colors.text,
-  },
-  phoneDivider: {
-    width: 1,
-    height: 20,
-    backgroundColor: Colors.border,
   },
   forgotPassword: {
     alignSelf: 'flex-end',

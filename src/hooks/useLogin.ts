@@ -9,11 +9,11 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (phone: string, password: string) => {
+  const handleLogin = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await authApi.login({ phone: `+234${phone}`, password });
+      const { data } = await authApi.login({ email, password });
       await setToken(data.token, data.user.phone_verified ?? false);
       // AuthNavigator in _layout.tsx handles the redirect automatically
     } catch (err) {

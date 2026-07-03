@@ -8,11 +8,11 @@ export function useForgotPassword() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleForgotPassword = async (phone: string) => {
+  const handleForgotPassword = async (email: string) => {
     setLoading(true);
     setError(null);
     try {
-      await authApi.forgotPassword({ phone: `+234${phone}` });
+      await authApi.forgotPassword({ email });
       setSuccess(true);
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Failed to send OTP. Please try again.');

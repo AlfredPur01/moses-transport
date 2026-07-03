@@ -1,22 +1,23 @@
 import apiClient from './client';
 
 export interface LoginPayload {
-  phone: string;
+  email: string;
   password: string;
 }
 
 export interface RegisterPayload {
   fullName: string;
+  email: string;
   phone: string;
   password: string;
 }
 
 export interface ForgotPasswordPayload {
-  phone: string;
+  email: string;
 }
 
 export interface ResetPasswordPayload {
-  phone: string;
+  email: string;
   otp: string;
   newPassword: string;
 }
@@ -24,6 +25,7 @@ export interface ResetPasswordPayload {
 export interface AuthUser {
   id: string;
   full_name: string;
+  email: string;
   phone: string;
   role: string;
   status: string;
