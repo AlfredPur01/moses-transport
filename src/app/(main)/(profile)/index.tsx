@@ -121,6 +121,9 @@ export default function ProfileScreen() {
             </View>
           )}
           <Text style={styles.fullName}>{profile.full_name}</Text>
+          {profile.user_code && (
+            <Text style={styles.userCode}>{profile.user_code}</Text>
+          )}
           <Text style={styles.phone}>{profile.phone}</Text>
           <View style={[styles.statusBadge, { backgroundColor: kycCfg.bg }]}>
             <Ionicons name={kycCfg.icon} size={12} color={kycCfg.color} />
@@ -253,6 +256,7 @@ const styles = StyleSheet.create({
   },
   avatarInitials: { fontSize: Typography.sizes.xxxl, fontWeight: Typography.weights.bold, color: Colors.primary },
   fullName: { fontSize: Typography.sizes.xl, fontWeight: Typography.weights.bold, color: Colors.text },
+  userCode: { fontSize: Typography.sizes.sm, fontWeight: Typography.weights.semibold, color: Colors.primary, fontFamily: 'monospace', letterSpacing: 1 },
   phone: { fontSize: Typography.sizes.base, color: Colors.textSecondary },
   statusBadge: {
     flexDirection: 'row',

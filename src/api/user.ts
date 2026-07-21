@@ -2,6 +2,7 @@ import apiClient from './client';
 
 export interface UserProfile {
   id: string;
+  user_code?: string;
   full_name: string;
   phone: string;
   email?: string;
@@ -119,6 +120,8 @@ export type VehicleType = 'motorcycle' | 'tricycle';
 export interface FeeInitResponse {
   reference:          string;
   amount:             number;
+  platform_fee:       number;
+  total_amount:       number;
   vehicle_type:       VehicleType;
   account_number:     string;
   account_name:       string;

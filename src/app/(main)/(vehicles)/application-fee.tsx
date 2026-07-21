@@ -19,7 +19,7 @@ import { getApiErrorMessage } from '@/utils/error';
 const fmt = (n: number) => `₦${Number(n).toLocaleString('en-NG')}`;
 
 const VEHICLE_OPTIONS: { type: VehicleType; label: string; fee: number; icon: any; description: string }[] = [
-  { type: 'motorcycle', label: 'Motorcycle', fee: 6000,  icon: 'bicycle', description: 'Okada / dispatch rider' },
+  { type: 'motorcycle', label: 'Motorcycle', fee: 7000,  icon: 'bicycle', description: 'Okada / dispatch rider' },
   { type: 'tricycle',   label: 'Tricycle',   fee: 10000, icon: 'car',     description: 'Keke / cargo tricycle'  },
 ];
 
@@ -156,9 +156,9 @@ export default function ApplicationFeeScreen() {
           {/* Amount */}
           <View style={styles.amountCard}>
             <Text style={styles.amountLabel}>Transfer exactly</Text>
-            <Text style={styles.amountValue}>{fmt(transferInfo.amount)}</Text>
+            <Text style={styles.amountValue}>{fmt(transferInfo.total_amount ?? transferInfo.amount)}</Text>
             <Text style={styles.amountNote}>
-              {transferInfo.vehicle_type === 'motorcycle' ? 'Motorcycle' : 'Tricycle'} application fee · one-time
+              {transferInfo.vehicle_type === 'motorcycle' ? 'Motorcycle' : 'Tricycle'} fee ₦{Number(transferInfo.amount).toLocaleString('en-NG')} + ₦{Number(transferInfo.platform_fee ?? 0).toLocaleString('en-NG')} processing
             </Text>
           </View>
 
@@ -279,13 +279,19 @@ export default function ApplicationFeeScreen() {
           })}
         </View>
 
-        {selectedOption && (
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryLabel}>You will transfer</Text>
-            <Text style={styles.summaryAmount}>{fmt(selectedOption.fee)}</Text>
-            <Text style={styles.summaryNote}>One-time, non-refundable application fee</Text>
-          </View>
-        )}
+        {selectedOption && (() => {
+          const platformFee = selectedOption.fee >= 10000 ? 250 : 150;
+          const totalFee    = selectedOption.fee + platformFee;
+          return (
+            <View style={styles.summaryCard}>
+              <Text style={styles.summaryLabel}>You will transfer</Text>
+              <Text style={styles.summaryAmount}>{fmt(totalFee)}</Text>
+              <Text style={styles.summaryNote}>
+                {fmt(selectedOption.fee)} fee + {fmt(platformFee)} processing · one-time
+              </Text>
+            </View>
+          );
+        })()}
 
         {error ? (
           <View style={styles.errorBanner}>
