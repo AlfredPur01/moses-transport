@@ -12,12 +12,21 @@ function AuthNavigator() {
   const segments = useSegments();
   const router = useRouter();
   const pushRegistered = useRef(false);
+  // Tracks whether we have ever seen a non-empty segments array.
+  // segments === [] on two occasions: (1) the root index route on first load,
+  // and (2) while the native image picker is open on Android. We only want to
+  // skip the guard for case 2 — i.e. when the user is already somewhere inside
+  // the app and the picker temporarily clears segments.
+  const seenSegments = useRef(false);
 
   useEffect(() => {
     if (isLoading) return;
-    // segments is [] while the native image picker / camera is open on Android.
-    // Bail out so we don't fire a redirect mid-picker and send the user home.
-    if (segments.length === 0) return;
+    if (segments.length > 0) {
+      seenSegments.current = true;
+    } else if (seenSegments.current) {
+      // segments dropped back to [] while already navigated — image picker is open.
+      return;
+    }
 
     const inAuth    = segments[0] === '(auth)';
     const inMain    = segments[0] === '(main)';
