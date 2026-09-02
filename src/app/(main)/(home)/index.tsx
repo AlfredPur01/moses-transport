@@ -292,14 +292,7 @@ function NoLoanCard() {
       <Text style={styles.noLoanSub}>
         Browse available vehicles and apply for a daily or weekly autopay plan.
       </Text>
-      <TouchableOpacity
-        style={styles.browseBtn}
-        onPress={() => router.push('/(main)/(vehicles)')}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.browseBtnTxt}>Browse Vehicles</Text>
-        <Ionicons name="arrow-forward" size={14} color="#fff" />
-      </TouchableOpacity>
+
     </View>
   );
 }

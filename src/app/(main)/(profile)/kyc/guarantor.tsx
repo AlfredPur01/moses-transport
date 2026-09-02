@@ -284,6 +284,7 @@ export default function KycGuarantorScreen() {
             ninValue={g2Nin}
             photo={g2Photo}
             onPickPhoto={(fromCamera) => pickImage(fromCamera, setG2Photo)}
+            hidePhoto
           />
 
           {/* Error */}
@@ -320,6 +321,7 @@ function GuarantorSection({
   ninValue,
   photo,
   onPickPhoto,
+  hidePhoto = false,
 }: {
   title: string;
   prefix: 'g1' | 'g2';
@@ -328,6 +330,7 @@ function GuarantorSection({
   ninValue: string;
   photo: PhotoState;
   onPickPhoto: (fromCamera: boolean) => void;
+  hidePhoto?: boolean;
 }) {
   return (
     <View style={styles.section}>
@@ -441,11 +444,13 @@ function GuarantorSection({
           )}
         />
 
-        <NinPhotoSection
-          photo={photo}
-          onPick={onPickPhoto}
-          label="NIN Document Photo"
-        />
+        {!hidePhoto && (
+          <NinPhotoSection
+            photo={photo}
+            onPick={onPickPhoto}
+            label="NIN Document Photo"
+          />
+        )}
       </View>
     </View>
   );

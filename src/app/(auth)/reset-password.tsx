@@ -50,8 +50,8 @@ function OtpInput({
   onChange: (val: string) => void;
   error?: string;
 }) {
-  const inputRefs = useRef<(TextInput | null)[]>([]);
-  const digits = value.padEnd(6, '').split('').slice(0, 6);
+ const inputRefs = useRef<(TextInput | null)[]>([]);
+  const digits = Array.from({ length: 6 }, (_, i) => value[i] ?? '');
 
   const handleChange = (text: string, index: number) => {
     const cleaned = text.replace(/\D/g, '').slice(-1);
